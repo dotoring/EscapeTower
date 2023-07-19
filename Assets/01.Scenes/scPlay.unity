@@ -259,6 +259,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a9919b6c653f1b47b0dcd4b8eab7ffe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SkType: 0
+  m_SkCountText: {fileID: 0}
 --- !u!1 &39931125
 GameObject:
   m_ObjectHideFlags: 0
@@ -645,6 +647,107 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400012, guid: f3cd25b3bf53c4adaaf087d862e435e6, type: 3}
   m_PrefabInstance: {fileID: 274007039}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &274007042 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100046, guid: f3cd25b3bf53c4adaaf087d862e435e6, type: 3}
+  m_PrefabInstance: {fileID: 274007039}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &274007043
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 274007042}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 5
+  MaxDistance: 10
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &327586555
 GameObject:
   m_ObjectHideFlags: 0
@@ -690,6 +793,8 @@ MonoBehaviour:
   imgHpbar: {fileID: 577752833}
   bloodEffect: {fileID: 197121971965432688, guid: 19d244521af2bb24797ddf00cf4da5da, type: 3}
   ShieldObj: {fileID: 1218569180}
+  CoinSfx: {fileID: 8300000, guid: 73587ec71afd8474981c175e3afc945b, type: 3}
+  DiamondSfx: {fileID: 8300000, guid: bf9a232437add674e87688609589ff79, type: 3}
 --- !u!4 &327586557
 Transform:
   m_ObjectHideFlags: 0
@@ -1305,6 +1410,8 @@ MonoBehaviour:
   imgHpbar: {fileID: 577752833}
   bloodEffect: {fileID: 0}
   ShieldObj: {fileID: 0}
+  CoinSfx: {fileID: 0}
+  DiamondSfx: {fileID: 0}
 --- !u!114 &669870325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1585,6 +1692,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a9919b6c653f1b47b0dcd4b8eab7ffe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SkType: 0
+  m_SkCountText: {fileID: 0}
 --- !u!1 &882046018
 GameObject:
   m_ObjectHideFlags: 0
@@ -1935,6 +2044,12 @@ MonoBehaviour:
   m_HTextPrefab: {fileID: 7989784628267976376, guid: ceb3d6d6a97e3f648b84e588848e5264, type: 3}
   m_SkCoolPrefab: {fileID: 5581276792016480354, guid: 14d88d6aa3b42b14b98cb27ac0566f48, type: 3}
   m_SkCoolRoot: {fileID: 1594718940}
+  m_SkInvenNode:
+  - {fileID: 675066232}
+  - {fileID: 18707248}
+  - {fileID: 1988481570}
+  m_CoinItem: {fileID: 0}
+  m_UserGoldText: {fileID: 1837679656}
 --- !u!4 &1043886643
 Transform:
   m_ObjectHideFlags: 0
@@ -2761,7 +2876,7 @@ GameObject:
   - component: {fileID: 1837679657}
   - component: {fileID: 1837679656}
   m_Layer: 5
-  m_Name: Text (Legacy)
+  m_Name: UserGoldText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3119,6 +3234,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a9919b6c653f1b47b0dcd4b8eab7ffe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SkType: 0
+  m_SkCountText: {fileID: 0}
 --- !u!1001 &2064295581
 PrefabInstance:
   m_ObjectHideFlags: 0

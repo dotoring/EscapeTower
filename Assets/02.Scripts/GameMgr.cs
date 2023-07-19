@@ -47,6 +47,12 @@ public class GameMgr : MonoBehaviour
     [Header("------- Skill Cool Timer -------")]
     public GameObject m_SkCoolPrefab = null;
     public Transform m_SkCoolRoot = null;
+    public SkInvenNode[] m_SkInvenNode;     //Skill 인벤토리 버튼 연결 변수
+
+    [HideInInspector] public GameObject m_CoinItem = null;
+    [Header("------ Gold UI ------")]
+    public Text m_UserGoldText = null;
+    int m_CurGold = 0;
 
     //싱글턴 패턴을 위한 인스턴스 변수 선언
     public static GameMgr Inst = null;
@@ -65,6 +71,7 @@ public class GameMgr : MonoBehaviour
         s_GameState = GameState.GameIng;
 
         GlobalValue.LoadGameData();
+        RefreshGameUI();
 
         DispScore(0);
 
@@ -99,6 +106,7 @@ public class GameMgr : MonoBehaviour
 
         m_RefHero = GameObject.FindObjectOfType<PlayerCtrl>();
 
+        m_CoinItem = Resources.Load("CoinItem/CoinPrefab") as GameObject;
     }//void Start()
 
     // Update is called once per frame
@@ -131,8 +139,20 @@ public class GameMgr : MonoBehaviour
 
     public void UseSkill_Key(SkillType a_SkType)
     {
+        if (GlobalValue.g_SkillCount[(int)a_SkType] <= 0)
+        {
+            return;
+        }
+
         if (m_RefHero != null)
             m_RefHero.UseSkill_Item(a_SkType);
+
+        if ((int)a_SkType < m_SkInvenNode.Length)
+        {
+            m_SkInvenNode[(int)a_SkType].m_SkCountText.text =
+                        GlobalValue.g_SkillCount[(int)a_SkType].ToString();
+        }
+
     }
 
     //점수 누적 및 화면 표시
@@ -140,6 +160,35 @@ public class GameMgr : MonoBehaviour
     {
         totScore += score;
         txtScore.text = "score <color=#ff0000>" + totScore.ToString() + "</color>";
+    }
+
+    public void AddGold(int value = 10)
+    {
+        m_CurGold += value;
+        if(m_CurGold < 0)
+        {
+            m_CurGold = 0;
+        }
+
+        GlobalValue.g_UserGold += value;
+
+        if(GlobalValue.g_UserGold < 0)
+        {
+            GlobalValue.g_UserGold = 0;
+        }
+
+        int a_MaxValue = int.MaxValue - 10;
+        if(a_MaxValue < GlobalValue.g_UserGold)
+        {
+            GlobalValue.g_UserGold = a_MaxValue;
+        }
+
+        if(m_UserGoldText != null)
+        {
+            m_UserGoldText.text = "Gold <color=#ffff00>" + GlobalValue.g_UserGold + "</color>";
+        }
+
+        PlayerPrefs.SetInt("UserGold", GlobalValue.g_UserGold);
     }
 
     //몬스터 생성 코루틴 함수
@@ -218,5 +267,24 @@ public class GameMgr : MonoBehaviour
         obj.transform.SetParent(m_SkCoolRoot, false);
         SkCool_NodeCtrl skNode = obj.GetComponent<SkCool_NodeCtrl>();
         skNode.InitState(a_Time, a_Dur);
+    }
+
+    void RefreshGameUI()
+    {
+        if (m_UserGoldText != null)
+        {
+            m_UserGoldText.text = "Gold <color=#ffff00>" + GlobalValue.g_UserGold + "</color>";
+        }
+
+        for (int i = 0; i < GlobalValue.g_SkillCount.Length; i++)
+        {
+            if(m_SkInvenNode.Length <= i)
+            {
+                continue;
+            }
+
+            m_SkInvenNode[i].m_SkType = (SkillType)i;
+            m_SkInvenNode[i].m_SkCountText.text = GlobalValue.g_SkillCount[i].ToString();
+        }
     }
 }

@@ -50,6 +50,11 @@ public class PlayerCtrl : MonoBehaviour
     public GameObject ShieldObj = null;
     //--- 쉴드 스킬
 
+    [Header("----- Sound -----")]
+    public AudioClip CoinSfx;
+    public AudioClip DiamondSfx;
+    AudioSource Ad_Source = null;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -72,6 +77,12 @@ public class PlayerCtrl : MonoBehaviour
         m_ChrCtrl = GetComponent<CharacterController>();
 
         m_FireCtrl = GetComponent<FireCtrl>();
+
+        Transform a_PMesh = transform.Find("PlayerMesh");
+        if(a_PMesh != null)
+        {
+            Ad_Source = a_PMesh.GetComponent<AudioSource>();
+        }
     }
 
     // Update is called once per frame
@@ -189,6 +200,19 @@ public class PlayerCtrl : MonoBehaviour
                 PlayerDie();
             }
         }
+
+        else if(coll.gameObject.name.Contains("CoinPrefab") == true)
+        {
+            int a_CalcGold = 10;
+            GameMgr.Inst.AddGold(a_CalcGold);
+
+            if(Ad_Source != null && CoinSfx != null)
+            {
+                Ad_Source.PlayOneShot(CoinSfx, 0.3f);
+            }
+
+            Destroy(coll.gameObject);
+        }
     }//void OnTriggerEnter(Collider coll)
 
     void OnCollisionEnter(Collision coll)
@@ -270,7 +294,7 @@ public class PlayerCtrl : MonoBehaviour
             if (m_FireCtrl != null)
                 m_FireCtrl.FireGrenade();
         }
-        else if(a_SkType == SkillType.Skill_2)  //보호막
+        else if (a_SkType == SkillType.Skill_2)  //보호막
         {
             if (0.0f < m_SdOnTime)
                 return;
@@ -279,6 +303,11 @@ public class PlayerCtrl : MonoBehaviour
 
             GameMgr.Inst.SkillTimeMethod(m_SdOnTime, m_SdDuration);
         }
+
+        int a_SkIdx = (int)a_SkType;
+        GlobalValue.g_SkillCount[a_SkIdx]--;
+        string a_MkKey = "SkItem_" + (a_SkIdx).ToString();
+        PlayerPrefs.SetInt(a_MkKey, GlobalValue.g_SkillCount[a_SkIdx]);
 
     }//public void UseSkill_Item(SkillType a_SkType)
 

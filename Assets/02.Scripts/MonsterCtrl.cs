@@ -245,6 +245,14 @@ public class MonsterCtrl : MonoBehaviour
         //몬스터 오브젝트 풀로 환원시키는 코루틴 함수 호출
         StartCoroutine(this.PushObjectPool());
 
+        //몬스터 사망시 아이템 드롭
+        if(GameMgr.Inst.m_CoinItem != null)
+        {
+            GameObject a_CoinObj = Instantiate(GameMgr.Inst.m_CoinItem) as GameObject;
+            a_CoinObj.transform.position = this.transform.position;
+            Destroy(a_CoinObj, 10.0f);
+        }
+
     }//void MonsterDie()
 
     IEnumerator PushObjectPool()
