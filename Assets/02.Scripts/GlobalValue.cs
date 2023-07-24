@@ -24,6 +24,7 @@ public class GlobalValue
 
     public static void LoadGameData()
     {
+
         g_NickName  = PlayerPrefs.GetString("NickName", "SBS¿µ¿õ");
         g_BestScore = PlayerPrefs.GetInt("BestScore", 0);
         g_UserGold  = PlayerPrefs.GetInt("UserGold", 0);
@@ -34,7 +35,7 @@ public class GlobalValue
             a_MkKey = "SkItem_" + ii.ToString();
             g_SkillCount[ii] = PlayerPrefs.GetInt(a_MkKey, 0);
 
-            g_SkillCount[ii] = 3 - ii;  //Test ¿ë
+            //g_SkillCount[ii] = 3 - ii;  //Test ¿ë
         }
     }//public static void LoadGameData()
 }

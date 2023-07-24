@@ -18,6 +18,14 @@ public class LobbyMgr : MonoBehaviour
 
         if (m_Start_Btn != null)
             m_Start_Btn.onClick.AddListener(StartBtnClick);
+
+        if(m_Store_Btn != null)
+        {
+            m_Store_Btn.onClick.AddListener(() =>
+            {
+                SceneManager.LoadScene("StoreScene");
+            });
+        }
     }
 
     // Update is called once per frame
