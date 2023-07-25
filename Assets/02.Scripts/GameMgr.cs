@@ -18,6 +18,7 @@ public class GameMgr : MonoBehaviour
     public Text txtScore;
     //누적 점수를 기록하기 위한 변수
     private int totScore = 0;
+    int m_CurScore = 0;     //이번 스테이지에서 얻은 게임 점수
 
     public Button BackBtn;
 
@@ -53,6 +54,13 @@ public class GameMgr : MonoBehaviour
     [Header("------ Gold UI ------")]
     public Text m_UserGoldText = null;
     int m_CurGold = 0;
+
+    [Header("------ GameOverPanel ------")]
+    public GameObject ResultPanel = null;
+    public Text Title_txt = null;
+    public Text Result_txt = null;
+    public Button Replay_Btn = null;
+    public Button RstLobby_Btn = null;
 
     //싱글턴 패턴을 위한 인스턴스 변수 선언
     public static GameMgr Inst = null;
@@ -103,6 +111,24 @@ public class GameMgr : MonoBehaviour
             StartCoroutine(this.CreateMonster());
         }
         //--- Monster Spawn
+
+        //게임오버 버튼 처리 코드
+        if(RstLobby_Btn != null)
+        {
+            RstLobby_Btn.onClick.AddListener(() =>
+            {
+                SceneManager.LoadScene("scLobby");
+            });
+        }
+
+        if (Replay_Btn != null)
+        {
+            Replay_Btn.onClick.AddListener(() =>
+            {
+                SceneManager.LoadScene("scLevel01");
+                SceneManager.LoadScene("scPlay", LoadSceneMode.Additive);
+            });
+        }
 
         m_RefHero = GameObject.FindObjectOfType<PlayerCtrl>();
 
@@ -158,8 +184,32 @@ public class GameMgr : MonoBehaviour
     //점수 누적 및 화면 표시
     public void DispScore(int score)
     {
-        totScore += score;
-        txtScore.text = "score <color=#ff0000>" + totScore.ToString() + "</color>";
+        //totScore += score;
+        //txtScore.text = "score <color=#ff0000>" + totScore.ToString() + "</color>";
+
+        m_CurScore += score;
+        if(m_CurScore < 0)
+        {
+            m_CurScore = 0;
+        }
+
+        GlobalValue.g_BestScore += score;
+
+        if(GlobalValue.g_BestScore < 0)
+        {
+            GlobalValue.g_BestScore = 0;
+        }
+
+        int a_MaxValue = int.MaxValue - 10;
+        if(a_MaxValue < GlobalValue.g_BestScore)
+        {
+            GlobalValue.g_BestScore = a_MaxValue;
+        }
+
+        txtScore.text = "SCORE <color=#ff0000>" + m_CurScore.ToString() + 
+            "</color> / BEST <color=#ff0000>" + GlobalValue.g_BestScore.ToString() + "</color>";
+
+        PlayerPrefs.SetInt("BestScore", GlobalValue.g_BestScore);
     }
 
     public void AddGold(int value = 10)
@@ -286,5 +336,13 @@ public class GameMgr : MonoBehaviour
             m_SkInvenNode[i].m_SkType = (SkillType)i;
             m_SkInvenNode[i].m_SkCountText.text = GlobalValue.g_SkillCount[i].ToString();
         }
+    }
+
+    public void GameOverFunc()
+    {
+        ResultPanel.SetActive(true);
+
+        Result_txt.text = "NickName\n" + GlobalValue.g_NickName + "\n\n" +
+            "획득 점수\n" + m_CurScore + "\n\n" + "획득 골드\n" + m_CurGold;
     }
 }

@@ -240,7 +240,7 @@ public class MonsterCtrl : MonoBehaviour
         }
 
         //GameMgr의 스코어 누적과 스코어 표시 함수 호출
-        GameMgr.Inst.DispScore(50);
+        GameMgr.Inst.DispScore(1); 
 
         //몬스터 오브젝트 풀로 환원시키는 코루틴 함수 호출
         StartCoroutine(this.PushObjectPool());

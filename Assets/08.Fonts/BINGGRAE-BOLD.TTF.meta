@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: fe39c7a89391e2e42be44a5b9f08a6ae
+guid: 25f262b821d582a43956901b3b4a61a4
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -8,10 +8,10 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
+  fontName: Binggrae
   fontNames:
   - Binggrae
-  fallbackFontReferences:
-  - {fileID: 12800000, guid: 567fdfae33c63694dba852d8fb9eac72, type: 3}
+  fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1

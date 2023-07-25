@@ -267,6 +267,8 @@ public class PlayerCtrl : MonoBehaviour
         _animation.Stop();
 
         GameMgr.s_GameState = GameState.GameEnd;
+        Time.timeScale = 0.0f;
+        GameMgr.Inst.GameOverFunc();
 
     }//void PlayerDie()
 
