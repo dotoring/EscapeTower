@@ -15,6 +15,7 @@ public class LobbyMgr : MonoBehaviour
     void Start()
     {
         Time.timeScale = 1.0f;  //일시정지를 원래 속도로...
+        GlobalValue.LoadGameData();
 
         if (m_Start_Btn != null)
             m_Start_Btn.onClick.AddListener(StartBtnClick);

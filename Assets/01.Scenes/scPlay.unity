@@ -2337,6 +2337,9 @@ MonoBehaviour:
   Result_txt: {fileID: 1266258980}
   Replay_Btn: {fileID: 273971386}
   RstLobby_Btn: {fileID: 1421688940}
+  m_BL_Tm_Text: {fileID: 539336225}
+  m_LastBlockText: {fileID: 1572919986}
+  m_DoorOpenText: {fileID: 861576293}
 --- !u!4 &1043886643
 Transform:
   m_ObjectHideFlags: 0

@@ -12,6 +12,8 @@ public class TitleMgr : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GlobalValue.LoadGameData();
+
         if(m_LoginBtn != null)
         {
             m_LoginBtn.onClick.AddListener(LoginBtn);

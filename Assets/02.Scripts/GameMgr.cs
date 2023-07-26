@@ -34,6 +34,11 @@ public class GameMgr : MonoBehaviour
     public float createTime = 2.0f;
     //몬스터의 최대 발생 개수
     public int maxMonster = 10;
+    //현재 층에서 스폰된 몬스터 카운트 변수
+    int m_MonCurNum = 0;
+    //현재 층에서 몬스터 최대 스폰 마릿수
+    int m_MonLimit = 20;
+
     //게임 종료 여부 변수
     public bool isGameOver = false;
 
@@ -61,6 +66,14 @@ public class GameMgr : MonoBehaviour
     public Text Result_txt = null;
     public Button Replay_Btn = null;
     public Button RstLobby_Btn = null;
+
+    [Header("------ Door Ctrl ------")]
+    public Text m_BL_Tm_Text = null;
+    public Text m_LastBlockText = null;
+    public Text m_DoorOpenText = null;
+    float m_Block_TimeOut = 0.0f;       //이번층 탈출 시간 타이머
+    GameObject[] m_DoorObj = new GameObject[3];
+    public static GameObject m_DiamondItem = null;
 
     //싱글턴 패턴을 위한 인스턴스 변수 선언
     public static GameMgr Inst = null;
@@ -130,6 +143,38 @@ public class GameMgr : MonoBehaviour
             });
         }
 
+        //--- Door 관련 구현 코드
+        m_BL_Tm_Text.text = GlobalValue.g_CurBlockNum + "층(도달:" + GlobalValue.g_BestBlock + "층)";
+
+        GameObject a_DoorObj = GameObject.Find("Gate_In_1");
+        if(a_DoorObj != null)
+        {
+            m_DoorObj[0] = a_DoorObj;
+        }
+        a_DoorObj = GameObject.Find("Gate_Exit_1");
+        if(a_DoorObj != null)
+        {
+            m_DoorObj[1] = a_DoorObj;
+            m_DoorObj[1].SetActive(false);
+        }
+        a_DoorObj = GameObject.Find("Gate_Exit_2");
+        if(a_DoorObj != null)
+        {
+            m_DoorObj[2] = a_DoorObj;
+            m_DoorObj[2].SetActive(false);
+        }
+
+        if(GlobalValue.g_CurBlockNum <= 1)
+        {
+            m_DoorObj[0].SetActive(false);
+        }
+        if(GlobalValue.g_CurBlockNum < GlobalValue.g_BestBlock)
+        {//최고 도달 층 이하면 그냥 열어 준다.
+            ShowDoor();
+        }
+
+        m_DiamondItem = Resources.Load("DiamondItem/DiamondPrefab") as GameObject;
+
         m_RefHero = GameObject.FindObjectOfType<PlayerCtrl>();
 
         m_CoinItem = Resources.Load("CoinItem/CoinPrefab") as GameObject;
@@ -161,6 +206,22 @@ public class GameMgr : MonoBehaviour
             UseSkill_Key(SkillType.Skill_2);    //보호막
         }
         //--- 단축키 이용으로 스킬 사용하기...
+
+        if(0.0f < m_Block_TimeOut)
+        {
+            m_Block_TimeOut -= Time.deltaTime;
+            m_BL_Tm_Text.text = GlobalValue.g_CurBlockNum + "층(도달:" +
+                GlobalValue.g_BestBlock + "층) / " + m_Block_TimeOut.ToString("F1");
+
+            if(m_Block_TimeOut <= 0.0f)
+            {
+                s_GameState = GameState.GameEnd;
+                Time.timeScale = 0.0f;
+                GameOverFunc();
+            }
+        }
+
+        MissionUIUpdate();
     }
 
     public void UseSkill_Key(SkillType a_SkType)
@@ -250,6 +311,11 @@ public class GameMgr : MonoBehaviour
             //몬스터 생성 주기 시간만큼 메인 루프에 양보
             yield return new WaitForSeconds(createTime);
 
+            if(m_MonLimit < m_MonCurNum)
+            {
+                continue;
+            }
+
             //플레이어가 사망했을 대 코루틴을 종료해 다음 루틴을 진행하지 않음
             if (GameMgr.s_GameState == GameState.GameEnd) 
                 yield break; //<-- 코루틴 함수를 즉시 빠져나가는 코드
@@ -262,6 +328,27 @@ public class GameMgr : MonoBehaviour
                 {
                     //몬스터를 출현시킬 위치의 인덱스값을 추출
                     int idx = Random.Range(1, points.Length);
+
+                    //--- 몬스터 카운트 및 마지막 몬스터 스폰 상태 체크 코드
+                    m_MonCurNum++;
+                    if(m_MonLimit <= m_MonCurNum)
+                    {
+                        if(GlobalValue.g_BestBlock <= GlobalValue.g_CurBlockNum)
+                        {
+                            //다음층으로 넘어갈 수 있는 층에서만
+                            //다이아몬드 스폰
+                            //60초 타이머 돌리기
+                            if(m_DiamondItem != null)
+                            {
+                                GameObject a_DmdObj = (GameObject)Instantiate(m_DiamondItem);
+                                a_DmdObj.transform.position = points[idx].position;
+                            }
+                            m_Block_TimeOut = 60.0f;
+
+                            break;
+                        }
+                    }
+
                     //몬스터의 출현위치를 설정
                     monster.transform.position = points[idx].position;
                     //몬스터를 활성화함
@@ -344,5 +431,47 @@ public class GameMgr : MonoBehaviour
 
         Result_txt.text = "NickName\n" + GlobalValue.g_NickName + "\n\n" +
             "획득 점수\n" + m_CurScore + "\n\n" + "획득 골드\n" + m_CurGold;
+    }
+
+    public void ShowDoor()
+    {
+        int a_Idx = (GlobalValue.g_CurBlockNum % 2) + 1;
+        if((1<=a_Idx && a_Idx <= 2) && m_DoorObj[a_Idx] != null)
+        {
+            m_DoorObj[a_Idx].SetActive(true);
+        }
+
+        if(m_LastBlockText != null)
+        {
+            m_LastBlockText.gameObject.SetActive(false);
+        }
+
+        if(m_DoorOpenText != null)
+        {
+            m_DoorOpenText.gameObject.SetActive(true);
+        }
+    }
+
+    void MissionUIUpdate()
+    {
+        if(m_LastBlockText == null)
+        {
+            return;
+        }
+
+        if(m_LastBlockText.gameObject.activeSelf == false)
+        {
+            return;
+        }
+
+        if(0.0f < m_Block_TimeOut)
+        {
+            m_LastBlockText.text = "<color=#00ffff>다이아몬드가 맵 어딘가에 생성되었습니다.</color>";
+        }
+        else
+        {
+            m_LastBlockText.text = "<color=#ffff00>(" + m_MonCurNum + " / " + m_MonLimit +
+                " Mon) " + "최종 100층</color>";
+        }
     }
 }

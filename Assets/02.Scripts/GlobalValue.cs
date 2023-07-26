@@ -20,6 +20,9 @@ public class GlobalValue
     public static int g_Exp = 0;            //경험치 Experience
     public static int g_Level = 0;          //레벨
 
+    public static int g_BestBlock = 1;      //최종 도달 건물 층수 (Block == Floor)
+    public static int g_CurBlockNum = 1;    //현재 건물 층수
+
     public static int[] g_SkillCount = new int[3];  //아이템 보유수
 
     public static void LoadGameData()
@@ -37,5 +40,12 @@ public class GlobalValue
 
             //g_SkillCount[ii] = 3 - ii;  //Test 용
         }
+
+        //PlayerPrefs.SetInt("BestBlockNum", 1);
+        //PlayerPrefs.SetInt("BlockNumber", 1);
+
+        g_BestBlock = PlayerPrefs.GetInt("BestBlockNum", 1);
+        g_CurBlockNum = PlayerPrefs.GetInt("BlockNumber", 1);
+
     }//public static void LoadGameData()
 }
