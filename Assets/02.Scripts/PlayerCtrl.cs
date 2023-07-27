@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 //클래스에 System.Serializable 이라는 어트리뷰트(Attribute)를 명시해야
@@ -54,6 +55,10 @@ public class PlayerCtrl : MonoBehaviour
     public AudioClip CoinSfx;
     public AudioClip DiamondSfx;
     AudioSource Ad_Source = null;
+
+    //Door 관련 변수
+    bool isShift = false;
+    float m_CkTimer = 0.3f; //엔딩씬 로딩 즉시 충돌되는 현상을 방지하기 위한 타이머
 
     // Start is called before the first frame update
     void Start()
@@ -173,6 +178,14 @@ public class PlayerCtrl : MonoBehaviour
 
         SkillUpdate();
 
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            isShift = true;
+        }
+        else
+        {
+            isShift = false;
+        }
     }//void Update()
 
     //충돌한 Collider의 IsTrigger 옵션이 체크됐을 때 발생
@@ -200,10 +213,20 @@ public class PlayerCtrl : MonoBehaviour
                 PlayerDie();
             }
         }
-
         else if(coll.gameObject.name.Contains("CoinPrefab") == true)
         {
-            int a_CalcGold = 10;
+            //높은 층으로 올라갈수록 골드 획득량 증가
+            int a_CalcGold = (GlobalValue.g_CurBlockNum - 5) * 2;
+            if(a_CalcGold < 0)
+            {
+                a_CalcGold = 0;
+            }
+            a_CalcGold = 10 + a_CalcGold;
+            if(200 < a_CalcGold)
+            {
+                a_CalcGold = 200;   //최대 200원까지만 지금 제한
+            }
+
             GameMgr.Inst.AddGold(a_CalcGold);
 
             if(Ad_Source != null && CoinSfx != null)
@@ -213,7 +236,63 @@ public class PlayerCtrl : MonoBehaviour
 
             Destroy(coll.gameObject);
         }
+        else if(coll.gameObject.name.Contains("DiamondPrefab") == true)
+        {
+            GameMgr.Inst.ShowDoor();
+
+            if(Ad_Source != null && DiamondSfx!= null)
+            {
+                Ad_Source.PlayOneShot(DiamondSfx, 0.3f);
+            }
+
+            Destroy(coll.gameObject);
+        }
+        else if(coll.gameObject.name.Contains("Gate_Exit_1") == true ||
+            coll.gameObject.name.Contains("Gate_Exit_2") == true)
+        {
+            GlobalValue.g_CurBlockNum++;
+            PlayerPrefs.SetInt("BlockNumber", GlobalValue.g_CurBlockNum);
+
+            if(GlobalValue.g_BestBlock < GlobalValue.g_CurBlockNum)
+            {
+                GlobalValue.g_BestBlock = GlobalValue.g_CurBlockNum;
+                PlayerPrefs.SetInt("BestBlockNum", GlobalValue.g_BestBlock);
+            }
+
+            if(GlobalValue.g_CurBlockNum < 100)
+            {
+                SceneManager.LoadScene("scLevel01");
+                SceneManager.LoadScene("scPlay", LoadSceneMode.Additive);
+            }
+            else
+            {
+                SceneManager.LoadScene("scLevel02");
+                SceneManager.LoadScene("scPlay", LoadSceneMode.Additive);
+            }
+        }
     }//void OnTriggerEnter(Collider coll)
+
+    void OnTriggerStay(Collider coll)
+    {
+        if(coll.gameObject.name.Contains("Gate_In_1"))
+        {
+            if(isShift == false)
+            {
+                return;
+            }
+
+            GlobalValue.g_CurBlockNum--;
+            if(GlobalValue.g_CurBlockNum < 1)
+            {
+                GlobalValue.g_CurBlockNum = 1;
+            }
+
+            PlayerPrefs.SetInt("BlockNumber", GlobalValue.g_CurBlockNum);
+
+            SceneManager.LoadScene("scLevel01");
+            SceneManager.LoadScene("scPlay", LoadSceneMode.Additive);
+        }
+    }
 
     void OnCollisionEnter(Collision coll)
     {

@@ -101,6 +101,20 @@ public class GameMgr : MonoBehaviour
             SceneManager.LoadScene("scLobby");
         });
 
+        //난이도 층별로 몬스터 최대 스폰 마릿수 증가
+        int a_CalcMaxMon = GlobalValue.g_CurBlockNum - 7;
+        if(a_CalcMaxMon < 0)
+        {
+            a_CalcMaxMon = 0;
+        }
+        a_CalcMaxMon = 10 + a_CalcMaxMon;
+        if(25 < a_CalcMaxMon)
+        {
+            a_CalcMaxMon = 25;
+        }
+        maxMonster = a_CalcMaxMon;      //10 ~ 25마리 까지 7층부터 한마리씩 늘어나게
+        m_MonLimit = 10 + a_CalcMaxMon; //20 ~ 35마리까지 7층부터 한마리씩 늘어남
+
         //--- Monster Spawn
         //Hierarchy 뷰의 SpawnPoint를 찾아 하위에 있는 모든 Transform 컴포넌트를 찾아옴
         points = GameObject.Find("SpawnPoint").GetComponentsInChildren<Transform>();

@@ -187,7 +187,10 @@ public class MonsterCtrl : MonoBehaviour
         }//switch(monsterState)
 
         //--- ÃÑ¾Ë ¹ß»ç
-        FireUpdate();
+        if(GlobalValue.g_CurBlockNum > 2)
+        {
+            FireUpdate();
+        }
         //--- ÃÑ¾Ë ¹ß»ç
 
     }//void MonActionUpdate()
@@ -363,7 +366,17 @@ public class MonsterCtrl : MonoBehaviour
                     a_Bullet.tag = "E_BULLET";
                     a_Bullet.transform.forward = a_CacDir.normalized;
 
-                    m_BLTime = 2.0f;
+                    float a_CalcDf = (GlobalValue.g_CurBlockNum - 10) * 0.012f;
+                    if(a_CalcDf < 0.0f)
+                    {
+                        a_CalcDf = 0.0f;
+                    }
+                    if(1.0f < a_CalcDf)
+                    {
+                        a_CalcDf = 1.0f;
+                    }
+
+                    m_BLTime = 2.0f - a_CalcDf;
                 }//if(m_BLTime <= 0.0f)
 
             }//if(-a_RayUDLimit <= a_CacDir.y && a_CacDir.y <= a_RayUDLimit)

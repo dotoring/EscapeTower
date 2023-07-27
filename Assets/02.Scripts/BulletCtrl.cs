@@ -19,7 +19,18 @@ public class BulletCtrl : MonoBehaviour
 
         if (gameObject.tag == "E_BULLET") //몬스터가 쏜 총알일 때 
         {
-            speed = 800.0f;
+            //난이도 4층부터 15씩 늘어나도록 3000까지 증가 (총알 속도)
+            float a_CalcSpeed = (GlobalValue.g_CurBlockNum - 3) * 15.0f;
+            if(a_CalcSpeed < 0.0f)
+            {
+                a_CalcSpeed = 0.0f;
+            }
+            if(2200.0f < a_CalcSpeed)
+            {
+                a_CalcSpeed = 2200.0f;
+            }
+
+            speed = 800.0f + a_CalcSpeed;
         }
         else //주인공이 쏜 총알일 때 
         {
